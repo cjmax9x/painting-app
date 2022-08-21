@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./themify-icons/themify-icons.css">
+    <title>Painting Drawing App</title>
+</head>
+<body>
+    <div class="app">
+        <div class="container">
+            <div class="header">
+
+                <div class="header_left">
+                    <span class="color_box">
+                        <input class="color" type="color" >
+                    </span>
+                    <span class="eraser_box">
+                        <i class="ti-eraser"></i>
+                    </span>
+                    <span class="minus_box">
+                        <i class="ti-minus"></i>
+                    </span>
+                    <span class="size_box">
+                        
+                    </span>
+                    <span class="plus_box">
+                        <i class="ti-plus"></i>
+                    </span>
+                </div>
+
+                <div class="header_right">
+                    <a class="save_box" download="Drawed.png">
+                        <i class="ti-save"></i>
+                    </a>
+                    <span class="close_box">
+                        <i class="ti-close"></i>
+                    </span>
+                </div>
+
+            </div>
+
+            <canvas width="1000px" height="600px" class="content"></canvas>
+
+        </div>
+    </div>
+
+    <script>
+        let inputColor = document.querySelector('.color')
+        let eraser = document.querySelector('.ti-eraser')
+        let minus = document.querySelector('.minus_box')
+        let sizeElement = document.querySelector('.size_box')
+        let plus = document.querySelector('.plus_box')
+        let save = document.querySelector('.save_box')
+        let closeElement = document.querySelector('.close_box')
+        let canvas = document.querySelector('.content')
+        let ctx = canvas.getContext('2d')
+
+        let pointI = {
+            x:0,
+            y:0
+        }
+        let pointII = {
+            x:0,
+            y:0
+        }
+        let isDrawing = false
+        let colorChange = 'black'
+        let size = 20
+
+        save.onclick = function(){
+            let output = canvas.toDataURL('image.png')
+            save.setAttribute('href', output)
+        }
+        eraser.onclick = function(){
+            console.log(colorChange)
+            colorChange = '#ffff'
+        }
+        inputColor.onchange = function(e){
+            colorChange = inputColor.value
+        }
+        closeElement.onclick = function(){
+            let canvasStats = canvas.getBoundingClientRect()
+            let canvasWidth = canvasStats.width
+            let canvasHeight = canvasStats.height
+            ctx.clearRect( 0, 0, canvasWidth, canvasHeight)
+        }
+
+        minus.onclick = function(){
+            if(size == 5){
+                size = 5
+            } else{
+                size -= 5
+            }
+        sizeElement.innerText = size
+
+        }
+        plus.onclick = function(){
+            if(size == 40){
+                size = 40
+            } else{
+                size += 5
+            }
+        sizeElement.innerText = size
+
+        }
+        sizeElement.innerText = size
+
+
+
+        document.addEventListener('mouseup', function(e){
+                isDrawing = false
+            })
+
+        canvas.addEventListener('mousedown', function(e){
+            pointI = {
+                x: e.offsetX,
+                y: e.offsetY
+            }
+            isDrawing = true;
+        })
+        canvas.addEventListener('mousemove', function(e){
+            if(isDrawing){
+                pointII = {
+                    x: e.offsetX,
+                    y: e.offsetY
+                }
+
+                ctx.beginPath();
+                ctx.arc(pointI.x, pointI.y, size/2 , 0 ,2 * Math.PI);
+                ctx.fillStyle = colorChange;
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(pointI.x, pointI.y);
+                ctx.lineTo(pointII.x, pointII.y);
+                ctx.strokeStyle = colorChange;
+                ctx.stroke();
+                ctx.lineWidth = size
+                }
+                pointI.x = pointII.x
+                pointI.y = pointII.y;
+            })
+            
+            
+    </script>
+</body>
+</html>
